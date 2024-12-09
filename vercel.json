@@ -1,0 +1,15 @@
+{
+    "version": 3,
+    "builds" : [
+        {
+            "src" : "./voc5.html",
+            "use" :"@vercel/node"
+        }
+    ],
+    "routes" : [
+        {
+            "src" : "/(.*)",
+            "use" :"/" 
+        }
+    ]
+}
