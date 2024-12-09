@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Counselor Configuration</title>
+    <style>
+        :root {
+            --primary-color: #7691a7;
+            --secondary-color: #f5f5f5;
+            --text-color: #333;
+            --border-color: #ddd;
+        }
+
+        <font color = "red">*</font> {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            position: relative;
+            width: 280px;
+            background: white;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            transition: margin-left 0.3s ease-in-out;
+            height: 100vh;
+        }
+
+        .sidebar.collapsed {
+            margin-left: -280px;
+        }
+
+        .toggle-btn {
+            position: fixed;
+            left: 330px;
+            top: 0px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 0 0 4px 4px;
+            transition: left 0.3s ease-in-out;
+            font-size: 14px;
+            z-index: 1001;
+        }
+
+        .toggle-btn .arrow {
+            display: inline-block;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .toggle-btn.collapsed {
+            left: 50px;
+        }
+
+        .toggle-btn.collapsed .arrow {
+            transform: rotate(180deg);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            background: white;
+            margin: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 2px rgba(150, 133, 167, 0.1);
+        }
+
+        .header {
+            background: #7691a7;
+            color: white;
+            padding: 25px 30px;
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin: -30px -30px 30px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .step-list {
+            list-style: none;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 10px;
+            margin-bottom: 10px;
+            color: #666;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .step-item.active {
+            background: #e3f2fd;
+            color: var(--primary-color);
+        }
+
+        .step-number {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-weight: 500;
+        }
+
+        .step-item.active .step-number {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="tel"]:focus,
+        input[type="number"]:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .file-upload {
+            border: 2px dashed var(--border-color);
+            padding: 20px;
+            text-align: center;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary-color);
+            background: #f8f9fa;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0, 0, 0, 0.5); /* Black w/ opacity */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
+
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .faq-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .faq-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .faq-item {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-item h3 {
+            font-size: 18px;
+            color: #333;
+            margin: 0;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .faq-item h3:hover {
+            color: #7691a7;
+        }
+
+        .faq-item p {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .faq-item.active p {
+            display: block;
+        }
+
+        .fixed-sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 50px;
+            background: var(--primary-color);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .icon-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .icon-container a {
+            color: white;
+            font-size: 20px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .icon-container a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Update existing container class to account for fixed sidebar */
+        .container {
+            margin-left: 50px;
+            width: calc(100% - 50px);
+        }
+
+        /* Update existing sidebar and toggle button */
+        .sidebar {
+            position: relative;
+            width: 280px;
+            background: white;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            transition: margin-left 0.3s ease-in-out;
+            height: 100vh;
+        }
+
+        .sidebar.collapsed {
+            margin-left: -280px;
+        }
+
+        .toggle-btn {
+            position: fixed;
+            left: 330px;
+            top: 0px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 0 0 4px 4px;
+            transition: left 0.3s ease-in-out;
+            font-size: 14px;
+            z-index: 1001;
+        }
+
+        .toggle-btn .arrow {
+            display: inline-block;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .toggle-btn.collapsed {
+            left: 50px;
+        }
+
+        .toggle-btn.collapsed .arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Modern form styling */
+        .form-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .form-section h2 {
+            color: var(--primary-color);
+            font-size: 24px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background: #f9f9f9;
+        }
+
+        input[type="text"]:focus,
+        input[type="tel"]:focus,
+        input[type="number"]:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 5px rgba(118, 145, 167, 0.3);
+            background: white;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            padding: 5px 0;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 5px 0;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .file-upload {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: border-color 0.3s ease, background 0.3s ease;
+            background: #f9f9f9;
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary-color);
+            background: #f0f4f7;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Update main content area */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            background: #f8f9fa;
+            margin: 20px;
+            border-radius: 12px;
+        }
+
+        /* Required field indicator */
+        .required {
+            color: #dc3545;
+            margin-left: 4px;
+        }
+
+        /* Small helper text */
+        .helper-text {
+            font-size: 13px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* Responsive textarea */
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        .faq-item-box {
+            background: var(--primary-color);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            color: white;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item-box:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="fixed-sidebar">
+        <div class="icon-container">
+            <a href="#" title="Phone"><i class="fas fa-phone"></i></a>
+            <a href="#" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" title="Group"><i class="fas fa-users"></i></a>
+            <a href="#" title="Profile"><i class="fas fa-user"></i></a>
+            <a href="#" title="Status"><i class="fas fa-chart-bar"></i></a>
+            <a href="#" title="Login"><i class="fas fa-sign-in-alt"></i></a>
+            <a href="#" title="Logout"><i class="fas fa-sign-out-alt"></i></a>
+        </div>
+    </div>
+    <div class="container">
+        <aside class="sidebar">
+            <button class="toggle-btn"><span class="arrow">❮</span></button>
+            <ul class="step-list">
+                <li class="step-item active">
+                    <span class="step-number">1</span>
+                    <span>Basic Information</span>
+                </li>
+                <li class="step-item">
+                    <span class="step-number">2</span>
+                    <span>Call Configuration</span>
+                </li>
+                <li class="step-item">
+                    <span class="step-number">3</span>
+                    <span>Call Flows</span>
+                </li>
+                <li class="step-item">
+                    <span class="step-number">4</span>
+                    <span>Tools & Integration</span>
+                </li>
+                <li class="step-item">
+                    <span class="step-number">5</span>
+                    <span>Analysis & API</span>
+                </li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="header">
+                <h1>Voice Counselor Configuration</h1>
+            </div>
+            <div class="faq-box" style="margin-top: 10px;">
+                <div class="faq-item-box">
+                    <a href="faqs1.html"><b><font color="white">For any questions, please refer to our FAQs on
+                        compliance requirements in India.</font></b></a>
+                </div>
+            </div>
+            <form id="counselorForm">
+                <div class="form-section">
+                  
+                    <h2>Basic Information</h2>
+                    
+                    <div class="form-group">
+                        <label>1. Organization/University Name <span class="required">*</span></label>
+                        <input type="text" id="organizationNameInput" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>2. Counselor Name (For Reference) <span class="required">*</span></label>
+                        <input type="text" id="counselorNameInput" placeholder="e.g. VGU Counselor1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>3. Call Direction <font color = "red"><font color = "red">*</font></font></label>
+                        <div class="radio-group">
+                            <label class="radio-item">
+                                <input type="radio" name="callDirection" value="inbound">
+                                Inbound
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="callDirection" value="outbound">
+                                Outbound
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="callDirection" value="both">
+                                Inbound and Outbound
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>4. Counselor Outbound Call Capacity <font color = "red">*</font></label>
+                        <input type="number" value="60" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>5. Client/lead phone number country code <font color = "red">*</font></label>
+                        <select required>
+                            <option value="+91">+91 (India)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>6. Expected Call Traffic <font color = "red">*</font></label>
+                        <textarea placeholder="e.g. Inbound: 5(Avg.) ,15(Peak)&#10;Outbound: 10(Avg.), 20(Peak)" required></textarea>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Call Configuration</h2>
+
+                    <div class="form-group">
+                        <label>7. Role <font color = "red">*</font></label>
+                        <textarea placeholder="e.g. For assistance with basic details fill up:" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>8. Outbound Call Flow <font color = "red">*</font></label>
+                        <textarea placeholder='e.g. Welcome message: "Hi! I’m an AI assistant from [Platform/University Name]. This is just a gentle reminder to complete your profile details to help us serve you better."' required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>9. Inbound Call Flow <font color = "red">*</font></label>
+                        <textarea placeholder='e.g. Welcome message: "Hi! I’m an AI assistant from [Platform/University Name]. How may I help you."' required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>10. Tools Required (Additional) <font color = "red">*</font></label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="information_database"> Information Database
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="call_transfer"> Call Transfer
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="live_status_check"> Live Status Check
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="other"> Other:
+                                <input type="text" placeholder="Specify other tools">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>11. Knowledge Base Information Bank and FAQs <font color = "red">*</font></label>
+                        <input type="file" multiple accept=".doc,.docx,.xls,.xlsx,.pdf" required>
+                        <small>Upload up to 10 supported files: document or spreadsheet. Max 10 MB per file.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>12. Call Transfer Mobile Number <font color = "red">*</font></label>
+                        <input type="tel" placeholder="e.g. Mobile number with country code" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>13. Source Data Schema <font color = "red">*</font></label>
+                        <textarea placeholder='{ "counselor_phone_number": str, "lead_phone_number": str, "counselor_role": str, .... other data }' required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>14. Post Conversation Analysis <font color = "red">*</font></label>
+                        <textarea placeholder='<font color = "red">*</font><font color = "red">*</font>mention required items after post analysis of conversation: 1. conversation history 2. conversation summary 3. Main concern 4. Admission intent 5. Reason for not filling basic details. 6. Expected Completion' required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>15. API Endpoint for Post Analysis and Postman Collection <font color = "red">*</font></label>
+                        <input type="text" placeholder="Give URL for Post Analysis and Postman collection or method with payload" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>16. Sample Conversations and Use Cases (Human Inputs) <font color = "red">*</font></label>
+                        <textarea placeholder='e.g. Give conversation samples between human assistant and student/client it will help to design the AI bot responses in similar way.' required></textarea>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">Save & Continue</button>
+                    <button type="reset" class="btn btn-secondary">Clear Form</button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <script>
+        // Form handling logic
+        document.getElementById('counselorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Add your form submission logic here
+
+            // Assuming you have the values stored in variables
+            const counselorName = document.getElementById('counselorNameInput').value;
+            const organizationName = document.getElementById('organizationNameInput').value;
+
+            // Navigate to status.html with query parameters
+            window.location.href = `statusweb.html?counselorName=${encodeURIComponent(counselorName)}&organizationName=${encodeURIComponent(organizationName)}`;
+        });
+
+        // Step navigation
+        document.querySelectorAll('.step-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.step-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        document.querySelector('.toggle-btn').addEventListener('click', function() {
+            const sidebar = document.querySelector('.sidebar');
+            const toggleBtn = document.querySelector('.toggle-btn');
+            
+            sidebar.classList.toggle('collapsed');
+            toggleBtn.classList.toggle('collapsed');
+        });
+
+        document.querySelectorAll('.faq-item h3').forEach(item => {
+            item.addEventListener('click', function() {
+                const parent = this.parentElement;
+                parent.classList.toggle('active'); // Toggle active class
+                const answer = parent.querySelector('p');
+                if (parent.classList.contains('active')) {
+                    answer.style.display = 'block'; // Show answer
+                } else {
+                    answer.style.display = 'none'; // Hide answer
+                }
+            });
+        });
+    </script>
+
+    <!-- Modal Structure -->
+    <div id="faqModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <iframe id="faqFrame" src="" style="width:100%; height:400px; border:none;"></iframe>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript to load the content of faqsvc.html into the modal and to handle opening and closing the modal
+        document.getElementById('faqLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            // Load the content of faqsvc.html into the modal
+            document.getElementById('faqFrame').src = 'faqsvc.html';
+            // Show the modal
+            document.getElementById('faqModal').style.display = 'block';
+        });
+
+        // JavaScript to handle closing the modal
+        document.getElementsByClassName('close')[0].addEventListener('click', function() {
+            document.getElementById('faqModal').style.display = 'none';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #ffffff;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+        /* Adjusted column widths */
+        .field-column {
+            background-color: #7f9ab615;
+            color: #1e90ff;
+            width: 150px; /* Reduced from 200px */
+        }
+        .samples-column {
+            background-color: #c3d3ad15;
+            color: #1e90ff;
+            
+            width: 600px; /* Increased to take up more space */
+        }
+        .sample-text {
+            font-style: italic;
+            color: #1e90ff;
+            margin: 10px 0;
+        }
+        .regular-text {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        h1 {
+            color: #1e90ff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .faq-box {
+            background-color: rgb(151, 156, 196);
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            margin-top: 10px; /* Optional: adds space above the box */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="faq-box">
+            <h1><font color="white">CTPL Voice Counselor Information</h1></font></div>
+        <table>
+            <tr>
+                <th class="field-column">Field</th>
+                <th class="samples-column">Samples</th>
+            </tr>
+            <tr>
+                <td class="field-column"> Organization/University Name.</td>
+                <td class="samples-column">
+                    <div class="regular-text">
+                        Write down the name of the organization or University</div>
+                    </div>
+                </td>
+            </tr>
+            <tr> 
+                <td class="field-column"> Counselor Name  </td>
+                <td class="samples-column">
+                    <div class="regular-text">
+                        (for reference) Should be same in CRM and AI Counselor Database, e.g. Name : VGU Counselor1</div>
+                    </div>
+                </td>
+            </tr> 
+             <tr> 
+                <td class="field-column"> Call Direction preference </td>
+                <td class="samples-column">
+                    <div class="regular-text">
+                        Inbound (Incomming call), Outbound (outgoing call) and Inbound and Outbound</div>
+                    </div>
+                </td>
+            </tr> 
+             <tr> 
+                <td class="field-column">Client phone number country code</td>
+                <td class="samples-column">
+                    <div class="regular-text">
+                        Client/lead phone number country code (As per the Client's requirement).</div>
+                    </div>
+                </td>
+            </tr> 
+
+            <tr>
+                <td class="field-column"> Expected call traffic details</td>
+                <td class="samples-column">
+                    <div class="regular-text">
+                        including both Inbound and Outbound (Mention Both Avg calls and Peak calls ).
+                    </div>
+                    <div class="sample-text">
+                        e.g. Inbound: 5(Avg.) ,15(Peak) Outbound: 10(Avg.), 20 (Peak)
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="field-column"> Role</td>
+                <td class="samples-column">
+                    <div class="regular-text">
+                        The role of the  AI counselor. <div class="sample-text"> e.g. For assistance with basic details fill up:
+                    </div>
+                    <div class="sample-text">
+                        <b>Profile Completion Assistant</b>
+                        The role of this AI counselor is to remind students to fill the basic details after registration. Any difficulty they are facing to fill up? When they are expected to fill the details? In case of any human assistance is required, the AI counselor can transfer the call to a human assistant. The counselor may or may not be required to answer the queries about the university, like course fees or other details
+                    </div>
+
+                </td>
+            </tr>
+            <tr>
+                <td class="field-column"> Outbound Call flow:</td>
+                <td class="samples-column">
+                    <div class="sample-text">
+                        e.g. Welcome message: "Hi! I’m an AI assistant from [Platform/University Name]. This is just a gentle reminder to complete your profile details to help us serve you better
+                    </div>
+                <div>.</div><div>.</div>
+                    <div class="sample-text">                       
+                        Could you let me know when you expect to have this done? If there’s any difficulty you’re facing, I’m here to assist.
+                        And if you’d prefer, I can also connect you to a human assistant for further help. Just let me know!" </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="field-column"> Inbound Call flow:</td>
+                <td class="samples-column">
+                    <div class="sample-text">
+                        e.g. Welcome message: "Hi! I’m an AI assistant from [Platform/University Name]. How may I help you.
+                    </div>
+                    <div class="sample-text">
+                        And if you’d prefer, I can also connect you to a human assistant for further help. Just let me know!" </td>
+            </tr>
+            <tr>
+                <td class="field-column"> Tools required (additional).</td>
+                <td class="samples-column">
+                    <div class="regular-text">
+                        These are like additional functionalities to provide specific information.
+                    </div>
+                    <div class="sample-text">
+                        e.g. Tick the checkboxes as applicable Information database is university information database( related documents must be uploaded). Call transfer is call transferring to a human assistant. (Phone no is required).</div>
+
+                </td>
+            </tr>
+             <tr> 
+                <td class="field-column"> Knowledge Base Information Bank and FAQs. </td>
+                <td class="samples-column">
+                    <div class="regular-text">
+                        Upload up to 10 supported files: document or spreadsheet. Max 10 MB per file.</div>
+                    </div>
+                </td>
+            </tr>  <tr> 
+                <td class="field-column"> Call Transfer Mobile Number (add with country code) </td>
+                <td class="samples-column">
+                    <div class="sample-text">
+                        e.g. Mobile number with country code of human assistant for call transfer.</div>
+                    </div>
+                </td>
+            </tr>
+         
+            <tr>
+                <td class="field-column"> Source Data Schema.</td>
+                <td class="samples-column">
+                    <div class="sample-text">
+                        e.g. <div>  { "counselor_phone_number": str,</div>
+                    <div>"lead_phone_number": str,</div>
+                <div> "counselor_role": str,</div>
+                <div>  .....</div>
+                <div> other data</div>
+                <div>   }
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-column">Post Conversation Analysis</td>
+                <td class="samples-column">
+                    <div class="regular-text">
+                        **mention required items after post analysis of conversation:
+                        <div class="sample-text">
+                        1.conversation history
+                        2. conversation summary
+                    </div>
+                    <div class="sample-text">
+                        3. Main concern
+4. Admission intent
+5. Reason for not filling basic details.
+6. Expected Completion
+                    </div>
+                </td>
+            </tr>   
+            <tr>
+                <td class="field-column">API Endpoint for Post Analysis and Postman collection.</td>
+                <td class="samples-column">
+                    <div class="sample-text">
+                        e.g Give URL for Post Analysis and Postman collection or method with payload to push post analysis data.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-column">Sample Conversations and use cases ( Human inputs)</td>
+                <td class="samples-column">
+                    <div class="sample-text">
+                    e.g Give conversation samples between human assistant and student/client it will help to design the AI bot responses in similar way.
+                    </div>
+                    
+                </td>
+            </tr>
+
+        </table>
+    </div>
+</body>
+</html>
