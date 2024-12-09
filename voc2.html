@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counselor Status</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f0f4f8; }
+        .loading { opacity: 0.5; pointer-events: none; }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+            <div class="px-6 py-4 bg-blue-50 border-b border-blue-200">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <h1 class="text-2xl font-bold text-blue-800">Counselor Status</h1>
+                    <div class="flex flex-wrap items-center gap-4">
+                        <div class="flex flex-wrap gap-2">
+                            <button class="phone-btn bg-white border border-blue-300 text-blue-800 rounded px-4 py-2 hover:bg-blue-50" data-phone="+918035735657">
+                                +918035735657
+                            </button>
+                            <button class="phone-btn bg-white border border-blue-300 text-blue-800 rounded px-4 py-2 hover:bg-blue-50" data-phone="9123456784">
+                                9123456784
+                            </button>
+                            <button class="phone-btn bg-white border border-blue-300 text-blue-800 rounded px-4 py-2 hover:bg-blue-50" data-phone="9123456783">
+                                9123456783
+                            </button>
+                        </div>
+                        <button id="retry-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" disabled>
+                            Fetch Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="loading-indicator" class="text-center py-4 text-blue-600 font-semibold hidden">
+                Loading counselor data...
+            </div>
+            <div id="error-message" class="text-center py-4 text-red-600 font-semibold hidden">
+                Error loading counselor data. Please try again.
+            </div>
+            <div id="debug-output" class="p-4 bg-gray-100 text-gray-800 text-sm whitespace-pre-wrap hidden"></div>
+            <div id="counselor-details" class="p-6">
+                <!-- Counselor details will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Element References
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const errorMessage = document.getElementById('error-message');
+        const counselorDetails = document.getElementById('counselor-details');
+        const debugOutput = document.getElementById('debug-output');
+        const retryBtn = document.getElementById('retry-btn');
+        const phoneButtons = document.querySelectorAll('.phone-btn');
+
+        // Configuration
+        const API_CONFIG = {
+            URL: 'http://localhost:YOUR_PORT/api/counselor-status',
+            PHONE_NUMBER: null
+        };
+
+        // Update phone number selection
+        function updatePhoneNumber(phoneNumber) {
+            // Remove active class from all buttons
+            phoneButtons.forEach(btn => {
+                btn.classList.remove('bg-blue-100');
+                btn.classList.add('bg-white');
+            });
+            
+            // Add active class to selected button
+            event.target.classList.remove('bg-white');
+            event.target.classList.add('bg-blue-100');
+            
+            // Update phone number and enable fetch button
+            API_CONFIG.PHONE_NUMBER = phoneNumber;
+            retryBtn.disabled = false;
+        }
+
+        async function fetchCounselorDetails() {
+            console.log('Fetching data for phone:', API_CONFIG.PHONE_NUMBER);
+            console.log('Using API URL:', API_CONFIG.URL);
+
+            // Reset UI
+            loadingIndicator.classList.remove('hidden');
+            errorMessage.classList.add('hidden');
+            debugOutput.classList.add('hidden');
+            counselorDetails.innerHTML = '';
+
+            try {
+                const fullUrl = `${API_CONFIG.URL}?phone=${API_CONFIG.PHONE_NUMBER}`;
+                console.log('Making request to:', fullUrl);
+
+                const response = await fetch(fullUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Add any other headers your API needs
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('Received data:', data);
+                renderCounselors(data);
+                loadingIndicator.classList.add('hidden');
+
+            } catch (error) {
+                console.error('Detailed error:', error);
+                loadingIndicator.classList.add('hidden');
+                errorMessage.classList.remove('hidden');
+                
+                const errorDetails = {
+                    type: error.name,
+                    message: error.message,
+                    apiUrl: API_CONFIG.URL,
+                    phoneNumber: API_CONFIG.PHONE_NUMBER
+                };
+                
+                debugOutput.textContent = JSON.stringify(errorDetails, null, 2);
+                debugOutput.classList.remove('hidden');
+            }
+        }
+
+        // Modified renderCounselors function
+        function renderCounselors(data) {
+            loadingIndicator.classList.add('hidden');
+            
+            // Ensure response is an array
+            const counselors = Array.isArray(data) ? data : [data];
+
+            // Clear existing content
+            counselorDetails.innerHTML = '';
+
+            // Render counselor details with modified styling
+            counselors.forEach(counselor => {
+                const counselorCard = document.createElement('div');
+                counselorCard.className = 'max-w-2xl mx-auto bg-white rounded-lg shadow-md border border-blue-100 overflow-hidden';
+                
+                counselorCard.innerHTML = `
+                    <div class="bg-blue-50 px-6 py-4 border-b border-blue-100 flex justify-between items-center">
+                        <h2 class="text-lg font-semibold text-blue-800">${counselor.counselor_name || 'N/A'}</h2>
+                        <div class="flex items-center">
+                            <span class="mr-2 text-sm font-medium text-blue-600">Status</span>
+                            <button class="bg-pink-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                                ON
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        ${Object.entries(counselor).map(([key, value]) => `
+                            <div class="flex justify-between">
+                                <span class="text-sm text-blue-600 capitalize">${key.replace(/_/g, ' ')}</span>
+                                <span class="text-sm font-medium text-blue-900">
+                                    ${key === 'created_at' ? new Date(value).toLocaleString() : (value || 'N/A')}
+                                </span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                
+                counselorDetails.appendChild(counselorCard);
+            });
+        }
+
+        // Event Listeners - Wrap in DOMContentLoaded to ensure elements exist
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add click handlers for phone buttons
+            phoneButtons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    updatePhoneNumber(e.target.dataset.phone);
+                });
+            });
+            
+            // Add click handler for retry button
+            retryBtn.addEventListener('click', () => {
+                if (API_CONFIG.PHONE_NUMBER) {
+                    fetchCounselorDetails();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

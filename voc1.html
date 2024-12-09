@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counselor Status</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f0f4f8;
+        }
+        .loading {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="container mx-auto px-4 py-8">
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+            <div class="px-6 py-4 bg-blue-50 border-b border-blue-200 flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-blue-800">Counselor Status</h1>
+                <button id="debug-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
+                    Show Debug Info
+                </button>
+            </div>
+            <div id="loading-indicator" class="text-center py-4 text-blue-600 font-semibold hidden">
+                Loading counselor data...
+            </div>
+            <div id="error-message" class="text-center py-4 text-red-600 font-semibold hidden">
+                Error loading counselor data. Please try again.
+            </div>
+            <div id="debug-output" class="text-center py-4 text-gray-600 text-sm hidden"></div>
+            <div id="counselor-details" class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Counselor details will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function fetchCounselorDetails() {
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const errorMessage = document.getElementById('error-message');
+            const counselorDetails = document.getElementById('counselor-details');
+            const debugOutput = document.getElementById('debug-output');
+
+            // Reset UI
+            loadingIndicator.classList.remove('hidden');
+            counselorDetails.classList.add('loading');
+            errorMessage.classList.add('hidden');
+            debugOutput.classList.add('hidden');
+            debugOutput.textContent = '';
+
+            try {
+                // Detailed logging of request
+                console.log('Attempting to fetch counselor data...');
+
+                const response = await fetch('https://cors-anywhere.herokuapp.com/https://f0dswhkb15.execute-api.us-east-1.amazonaws.com/dev/counselor-status', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': '0BAR6wTBIx4VMi1F7DgCj8VLbGNZwJy55ZOKiX0H'
+                    },
+                    body: JSON.stringify({
+                        "counselor_phone_number": "+918035735657"
+                    })
+                });
+
+                // Detailed logging of response
+                console.log('Response received:', response);
+
+                // Check if the response is successful
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+                }
+
+                // Parse the response
+                const counselorData = await response.json();
+                console.log('Parsed counselor data:', counselorData);
+
+                // Clear previous content
+                counselorDetails.innerHTML = '';
+
+                // Ensure response is an array
+                const counselors = Array.isArray(counselorData) ? counselorData : [counselorData];
+
+                // Render counselor details
+                counselors.forEach(counselor => {
+                    const counselorCard = document.createElement('div');
+                    counselorCard.className = 'bg-white rounded-lg shadow-md border border-blue-100 overflow-hidden';
+                    
+                    counselorCard.innerHTML = `
+                        <div class="bg-blue-50 px-6 py-4 border-b border-blue-100 flex justify-between items-center">
+                            <h2 class="text-lg font-semibold text-blue-800">${counselor.counselor_name || 'N/A'}</h2>
+                            <div class="flex items-center">
+                                <span class="mr-2 text-sm font-medium text-blue-600">Status</span>
+                                <button class="bg-pink-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                                    ON
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="flex justify-between">
+                                <span class="text-sm text-blue-600">Account Name</span>
+                                <span class="text-sm font-medium text-blue-900">${counselor.account_name || 'N/A'}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-blue-600">Phone Number</span>
+                                <span class="text-sm font-medium text-blue-900">${counselor.counselor_phone_number || 'N/A'}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-blue-600">Capacity</span>
+                                <span class="text-sm font-medium text-blue-900">${counselor.capacity || 'N/A'}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-blue-600">Direction</span>
+                                <span class="text-sm font-medium text-blue-900">${counselor.direction || 'N/A'}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-blue-600">Created At</span>
+                                <span class="text-sm font-medium text-blue-900">${counselor.created_at ? new Date(counselor.created_at).toLocaleString() : 'N/A'}</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    counselorDetails.appendChild(counselorCard);
+                });
+
+                // Hide loading indicator
+                loadingIndicator.classList.add('hidden');
+                counselorDetails.classList.remove('loading');
+
+            } catch (error) {
+                // Comprehensive error logging
+                console.error('Fetch Error:', error);
+
+                // Show error message
+                loadingIndicator.classList.add('hidden');
+                counselorDetails.classList.remove('loading');
+                errorMessage.classList.remove('hidden');
+
+                // Detailed error output
+                const errorDetails = `
+                    Error Type: ${error.name}
+                    Message: ${error.message}
+                    Stack Trace: ${error.stack}
+                `;
+                debugOutput.textContent = errorDetails;
+                debugOutput.classList.remove('hidden');
+            }
+        }
+
+        // Fetch counselor details when the page loads
+        document.addEventListener('DOMContentLoaded', fetchCounselorDetails);
+
+        // Debug button to show additional information
+        document.getElementById('debug-btn').addEventListener('click', () => {
+            const debugOutput = document.getElementById('debug-output');
+            debugOutput.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
