@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Counselor</title>
+    <script>
+        function loadContent(contentType) {
+            let content = '';
+            switch(contentType) {
+                case 'basicInfo':
+                    content = '<h2>Basic Information</h2><p>This is the basic information content.</p>';
+                    break;
+                case 'callConfig':
+                    content = '<h2>Call Configuration</h2><p>This is the call configuration content.</p>';
+                    break;
+                // Add more cases as needed
+                default:
+                    content = '<h2>Welcome</h2><p>Please select an option from the menu.</p>';
+            }
+            document.getElementById('contentArea').innerHTML = content;
+        }
+    </script>
+</head>
+<body>
+    <div id="navigation">
+        <button onclick="loadContent('basicInfo')">Basic Information</button>
+        <button onclick="loadContent('callConfig')">Call Configuration</button>
+        <!-- Add more buttons as needed -->
+    </div>
+    <div id="contentArea">
+        <h2>Welcome</h2>
+        <p>Please select an option from the menu.</p>
+    </div>
+</body>
+</html>
